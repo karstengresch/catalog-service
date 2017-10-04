@@ -54,7 +54,6 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public void getProduct(String itemId, Handler<AsyncResult<Product>> resulthandler) {
-      System.out.println("#+#+#+# #+#+#+# #+#+#+# getProduct #+#+#+# #+#+#+# #+#+#+#");
         // ----
         // To be implemented
         // 
@@ -76,18 +75,15 @@ public class CatalogServiceImpl implements CatalogService {
           Product product;
 
           Integer numberOfProducts = resultList.size();
-          System.out.println("#+#+#+# #+#+#+# #+#+#+# getProduct - numberOfProducts: " + String.valueOf(numberOfProducts) + " #+#+#+# #+#+#+# #+#+#+#");
-          System.out.println("#+#+#+# #+#+#+# #+#+#+# getProduct (numberOfProducts > 1)?:" + (numberOfProducts > 1) + " #+#+#+# #+#+#+# #+#+#+#");
           if (! (numberOfProducts == 1)) {
-            throw new AssertionError("Found " + String.valueOf(numberOfProducts) + ", but there should exactly be one. Check your data.");
+            // throw new AssertionError("Found " + String.valueOf(numberOfProducts) + ", but there should exactly be one. Check your data.");
+            resulthandler.handle(Future.failedFuture("Got " + String.valueOf(numberOfProducts) + "products, but there should only be one. Please analyze your data carefully."));
           } else {
-            System.out.println("#+#+#+# #+#+#+# #+#+#+# getProduct else inner #+#+#+# #+#+#+# #+#+#+#");
             resultJsonObject = resultList.get(0);
             product = new Product(resultJsonObject);
             resulthandler.handle(Future.succeededFuture(product));
           }
         } else {
-          System.out.println("#+#+#+# #+#+#+# #+#+#+# getProduct else outer #+#+#+# #+#+#+# #+#+#+#");
           asyncResult.cause().printStackTrace();
         }
       });
@@ -95,7 +91,6 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public void addProduct(Product product, Handler<AsyncResult<String>> resulthandler) {
-      System.out.println("#+#+#+# #+#+#+# #+#+#+# addProducts #+#+#+# #+#+#+# #+#+#+#");
         mongoClient.save("products", toDocument(product), resulthandler);
     }
 

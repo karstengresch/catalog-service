@@ -1,40 +1,37 @@
 package com.redhat.coolstore.catalog.api;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.io.IOException;
-import java.net.ServerSocket;
-
+import com.redhat.coolstore.catalog.model.Product;
+import com.redhat.coolstore.catalog.verticle.service.CatalogService;
+import io.vertx.core.*;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.redhat.coolstore.catalog.model.Product;
-import com.redhat.coolstore.catalog.verticle.service.CatalogService;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
+@RunWith(VertxUnitRunner.class)
 public class ApiVerticleTest {
 
     private Vertx vertx;
@@ -49,7 +46,7 @@ public class ApiVerticleTest {
      *
      * @param context the test context.
      */
-    //@Before
+    @Before
     public void setUp(TestContext context) throws IOException {
       vertx = Vertx.vertx();
 
@@ -58,17 +55,17 @@ public class ApiVerticleTest {
 
       // Let's configure the verticle to listen on the 'test' port (randomly picked).
       // We create deployment options and set the _configuration_ json object:
-      ServerSocket socket = new ServerSocket(0);
-      port = socket.getLocalPort();
-      socket.close();
+      ServerSocket serverSocket = new ServerSocket(0);
+      port = serverSocket.getLocalPort();
+      serverSocket.close();
 
-      DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("catalog.http.port", port));
+      DeploymentOptions deploymentOptions = new DeploymentOptions().setConfig(new JsonObject().put("catalog.http.port", port));
 
       //Mock the catalog Service
       catalogService = mock(CatalogService.class);
 
       // We pass the options as the second parameter of the deployVerticle method.
-      vertx.deployVerticle(new ApiVerticle(catalogService), options, context.asyncAssertSuccess());
+      vertx.deployVerticle(new ApiVerticle(catalogService), deploymentOptions, context.asyncAssertSuccess());
     }
 
     /**
@@ -78,12 +75,12 @@ public class ApiVerticleTest {
      * @param context
      *            the test context
      */
-    //@After
+    @After
     public void tearDown(TestContext context) {
-        vertx.close(context.asyncAssertSuccess());
+      vertx.close(context.asyncAssertSuccess());
     }
 
-    //@Test
+    @Test
     public void testGetProducts(TestContext context) throws Exception {
         //----
         // To be implemented
@@ -96,6 +93,48 @@ public class ApiVerticleTest {
         // * Use the `BodyHandler` method of the `HttpClientResponse` object to obtain and verify the response body.
         //
         //----
+      String itemId1 = "product1Id";
+      JsonObject json1 = new JsonObject()
+          .put("itemId", itemId1)
+          .put("name", "productName1")
+          .put("desc", "productDescription1")
+          .put("price", new Double(100.0));
+      String itemId2 = "product2Id";
+      JsonObject json2 = new JsonObject()
+          .put("itemId", itemId2)
+          .put("name", "productName2")
+          .put("desc", "productDescription2")
+          .put("price", new Double(100.0));
+      List<Product> products = new ArrayList<>();
+      products.add(new Product(json1));
+      products.add(new Product(json2));
+      doAnswer(new Answer<Void>() {
+        public Void answer(InvocationOnMock invocation){
+          Handler<AsyncResult<List<Product>>> handler = invocation.getArgument(0);
+          handler.handle(Future.succeededFuture(products));
+          return null;
+        }
+      }).when(catalogService).getProducts(any());
+
+      Async async = context.async();
+      vertx.createHttpClient().get(port, "localhost", "/products", response -> {
+        assertThat(response.statusCode(), equalTo(200));
+        assertThat(response.headers().get("Content-type"), equalTo("application/json"));
+        response.bodyHandler(body -> {
+          JsonArray json = body.toJsonArray();
+          Set<String> itemIds =  json.stream()
+                                     .map(j -> new Product((JsonObject)j))
+                                     .map(p -> p.getItemId())
+                                     .collect(Collectors.toSet());
+          assertThat(itemIds.size(), equalTo(2));
+          assertThat(itemIds, allOf(hasItem(itemId1),hasItem(itemId2)));
+          verify(catalogService).getProducts(any());
+          async.complete();
+        })
+                .exceptionHandler(context.exceptionHandler());
+      })
+           .exceptionHandler(context.exceptionHandler())
+           .end();
     }
 
 
@@ -105,6 +144,40 @@ public class ApiVerticleTest {
         // To be implemented
         //
         //----
+      String itemId = "product1Id";
+      JsonObject json = new JsonObject()
+          .put("itemId", itemId)
+          .put("name", "productName1")
+          .put("desc", "productDescription1")
+          .put("price", new Double(100.0));
+      Product product = new Product(json);
+      doAnswer(new Answer<Void>() {
+        public Void answer(InvocationOnMock invocation){
+          Handler<AsyncResult<Product>> handler = invocation.getArgument(1);
+          handler.handle(Future.succeededFuture(product));
+          return null;
+        }
+      }).when(catalogService).getProduct(eq("product1Id"),any());
+
+      Async async = context.async();
+      vertx.createHttpClient().get(port, "localhost", "/product/product1Id", response -> {
+        assertThat(response.statusCode(), equalTo(200));
+        assertThat(response.headers().get("Content-type"), equalTo("application/json"));
+        response.bodyHandler(body -> {
+          JsonObject result = body.toJsonObject();
+          assertThat(result, notNullValue());
+          // TODO is (Hamcrest) not resolved
+          // assertThat(result.containsKey("itemId"), is(true));
+          assertThat(result.getString("itemId"), equalTo("product1Id"));
+          verify(catalogService).getProduct(eq("product1Id"),any());
+          async.complete();
+        })
+                .exceptionHandler(context.exceptionHandler());
+      })
+           .exceptionHandler(context.exceptionHandler())
+           .end();
+
+
     }
 
     //@Test
@@ -113,6 +186,21 @@ public class ApiVerticleTest {
         // To be implemented
         //
         //----
+      doAnswer(new Answer<Void>() {
+        public Void answer(InvocationOnMock invocation){
+          Handler<AsyncResult<Product>> handler = invocation.getArgument(1);
+          handler.handle(Future.succeededFuture(null));
+          return null;
+        }
+      }).when(catalogService).getProduct(eq("111111"),any());
+
+      Async async = context.async();
+      vertx.createHttpClient().get(port, "localhost", "/product/111111", response -> {
+        assertThat(response.statusCode(), equalTo(404));
+        async.complete();
+      })
+           .exceptionHandler(context.exceptionHandler())
+           .end();
     }
 
     //@Test
