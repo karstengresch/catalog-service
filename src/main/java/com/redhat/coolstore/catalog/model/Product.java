@@ -1,9 +1,8 @@
 package com.redhat.coolstore.catalog.model;
 
-import java.io.Serializable;
-
-import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+
+import java.io.Serializable;
 
 public class Product implements Serializable {
 
@@ -13,6 +12,11 @@ public class Product implements Serializable {
     private String name;
     private String desc;
     private double price;
+
+    public static final String ITEM_ID_KEY = "itemId";
+    public static final String NAME_KEY = "name";
+    public static final String DESC_KEY = "desc";
+    public static final String PRICE_KEY = "price";
     
     public Product() {
         
@@ -30,6 +34,16 @@ public class Product implements Serializable {
     //  }
     //
     //-----
+
+    public Product(JsonObject jsonObject) {
+        this.itemId = jsonObject.getString(ITEM_ID_KEY);
+        this.name = jsonObject.getString(NAME_KEY);
+        this.desc= jsonObject.getString(DESC_KEY);
+        this.price= jsonObject.getDouble(PRICE_KEY);
+
+        // TBD mapTo approach?
+
+    }
     
     public String getItemId() {
         return itemId;
@@ -76,6 +90,14 @@ public class Product implements Serializable {
     //
     //-----
     public JsonObject toJson() {
-        return null;
+
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.put(ITEM_ID_KEY, itemId)
+                  .put(NAME_KEY, name)
+                  .put(DESC_KEY, desc)
+                  .put(PRICE_KEY, price);
+
+        return jsonObject;
     }
 }
