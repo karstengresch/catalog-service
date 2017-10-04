@@ -76,7 +76,6 @@ public class CatalogServiceImpl implements CatalogService {
 
           Integer numberOfProducts = resultList.size();
           if (! (numberOfProducts == 1)) {
-            // throw new AssertionError("Found " + String.valueOf(numberOfProducts) + ", but there should exactly be one. Check your data.");
             resulthandler.handle(Future.failedFuture("Got " + String.valueOf(numberOfProducts) + "products, but there should only be one. Please analyze your data carefully."));
           } else {
             resultJsonObject = resultList.get(0);

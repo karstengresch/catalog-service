@@ -35,15 +35,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CatalogServiceImpl.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CatalogServiceImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/redhat/coolstore/catalog/verticle/service/CatalogServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="768">
-              <caret line="79" column="12" lean-forward="false" selection-start-line="79" selection-start-column="12" selection-end-line="79" selection-end-column="12" />
+            <state relative-caret-position="730">
+              <caret line="77" column="42" lean-forward="false" selection-start-line="77" selection-start-column="42" selection-end-line="77" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3748#3749#0" expanded="true" />
-                <element signature="e#3828#3829#0" expanded="true" />
+                <element signature="e#3606#3607#0" expanded="true" />
+                <element signature="e#3686#3687#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -101,15 +101,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ApiVerticleTest.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ApiVerticleTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/com/redhat/coolstore/catalog/api/ApiVerticleTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="507">
-              <caret line="168" column="44" lean-forward="false" selection-start-line="168" selection-start-column="44" selection-end-line="168" selection-end-column="44" />
+            <state relative-caret-position="211">
+              <caret line="170" column="40" lean-forward="false" selection-start-line="170" selection-start-column="40" selection-end-line="170" selection-end-column="40" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2773#2774#0" expanded="true" />
-                <element signature="e#2828#2829#0" expanded="true" />
+                <element signature="e#2817#2818#0" expanded="true" />
+                <element signature="e#2872#2873#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Mockito.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.7.22/mockito-core-2.7.22-sources.jar!/org/mockito/Mockito.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="23389">
+              <caret line="2206" column="26" lean-forward="false" selection-start-line="2206" selection-start-column="26" selection-end-line="2206" selection-end-column="26" />
+              <folding>
+                <element signature="e#100747#100748#0" expanded="true" />
+                <element signature="e#100809#100810#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -171,8 +184,8 @@
         <option value="$PROJECT_DIR$/src/main/java/com/redhat/coolstore/catalog/model/Product.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/redhat/coolstore/catalog/api/ApiVerticle.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/redhat/coolstore/catalog/verticle/service/CatalogServiceTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/com/redhat/coolstore/catalog/api/ApiVerticleTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/redhat/coolstore/catalog/verticle/service/CatalogServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/test/java/com/redhat/coolstore/catalog/api/ApiVerticleTest.java" />
       </list>
     </option>
   </component>
@@ -888,8 +901,8 @@
           <caret line="81" column="125" lean-forward="true" selection-start-line="81" selection-start-column="125" selection-end-line="81" selection-end-column="125" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3748#3749#0" expanded="true" />
-            <element signature="e#3828#3829#0" expanded="true" />
+            <element signature="e#3606#3607#0" expanded="true" />
+            <element signature="e#3686#3687#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -950,8 +963,8 @@
           <caret line="117" column="52" lean-forward="true" selection-start-line="117" selection-start-column="52" selection-end-line="117" selection-end-column="52" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2773#2774#0" expanded="true" />
-            <element signature="e#2828#2829#0" expanded="true" />
+            <element signature="e#2817#2818#0" expanded="true" />
+            <element signature="e#2872#2873#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1062,26 +1075,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/com/redhat/coolstore/catalog/api/ApiVerticleTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/redhat/coolstore/catalog/verticle/service/CatalogServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="507">
-          <caret line="168" column="44" lean-forward="false" selection-start-line="168" selection-start-column="44" selection-end-line="168" selection-end-column="44" />
+        <state relative-caret-position="730">
+          <caret line="77" column="42" lean-forward="false" selection-start-line="77" selection-start-column="42" selection-end-line="77" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2773#2774#0" expanded="true" />
-            <element signature="e#2828#2829#0" expanded="true" />
+            <element signature="e#3606#3607#0" expanded="true" />
+            <element signature="e#3686#3687#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/redhat/coolstore/catalog/verticle/service/CatalogServiceImpl.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.7.22/mockito-core-2.7.22-sources.jar!/org/mockito/Mockito.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="768">
-          <caret line="79" column="12" lean-forward="false" selection-start-line="79" selection-start-column="12" selection-end-line="79" selection-end-column="12" />
+        <state relative-caret-position="23389">
+          <caret line="2206" column="26" lean-forward="false" selection-start-line="2206" selection-start-column="26" selection-end-line="2206" selection-end-column="26" />
+          <folding>
+            <element signature="e#100747#100748#0" expanded="true" />
+            <element signature="e#100809#100810#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/com/redhat/coolstore/catalog/api/ApiVerticleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="170" column="40" lean-forward="false" selection-start-line="170" selection-start-column="40" selection-end-line="170" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3748#3749#0" expanded="true" />
-            <element signature="e#3828#3829#0" expanded="true" />
+            <element signature="e#2817#2818#0" expanded="true" />
+            <element signature="e#2872#2873#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
@@ -138,7 +139,7 @@ public class ApiVerticleTest {
     }
 
 
-    //@Test
+    @Test
     public void testGetProduct(TestContext context) throws Exception {
         //----
         // To be implemented
@@ -166,8 +167,7 @@ public class ApiVerticleTest {
         response.bodyHandler(body -> {
           JsonObject result = body.toJsonObject();
           assertThat(result, notNullValue());
-          // TODO is (Hamcrest) not resolved
-          // assertThat(result.containsKey("itemId"), is(true));
+          assertThat(result.containsKey("itemId"), is(true));
           assertThat(result.getString("itemId"), equalTo("product1Id"));
           verify(catalogService).getProduct(eq("product1Id"),any());
           async.complete();
@@ -180,7 +180,7 @@ public class ApiVerticleTest {
 
     }
 
-    //@Test
+    @Test
     public void testGetNonExistingProduct(TestContext context) throws Exception {
         //----
         // To be implemented
@@ -192,7 +192,7 @@ public class ApiVerticleTest {
           handler.handle(Future.succeededFuture(null));
           return null;
         }
-      }).when(catalogService).getProduct(eq("111111"),any());
+      }).when(catalogService).getProduct(eq("product1Id"),any());
 
       Async async = context.async();
       vertx.createHttpClient().get(port, "localhost", "/product/111111", response -> {
@@ -203,7 +203,7 @@ public class ApiVerticleTest {
            .end();
     }
 
-    //@Test
+    @Test
     public void testAddProduct(TestContext context) throws Exception {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation){
@@ -214,7 +214,7 @@ public class ApiVerticleTest {
          }).when(catalogService).addProduct(any(),any());
 
         Async async = context.async();
-        String itemId = "111111";
+        String itemId = "product1Id";
         JsonObject json = new JsonObject()
                 .put("itemId", itemId)
                 .put("name", "productName")
