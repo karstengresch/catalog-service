@@ -73,14 +73,15 @@ public class ApiVerticle extends AbstractVerticle {
         catalogService.getProducts(asyncResult -> {
             if (asyncResult.succeeded()) {
                 List<Product> products = asyncResult.result();
-                JsonArray json = new JsonArray();
+                JsonArray jsonArray = new JsonArray();
                 products.stream()
                         .map(Product::toJson)
-                        .forEach(json::add);
+                        .forEach(jsonArray::add);
                 routingContext.response()
                   .putHeader("Content-type", "application/json")
-                  .end(json.encodePrettily());
+                  .end(jsonArray.encodePrettily());
             } else {
+                routingContext.response().setStatusCode(404);
                 routingContext.fail(asyncResult.cause());
             }
         });
@@ -109,6 +110,7 @@ public class ApiVerticle extends AbstractVerticle {
                       .end(product.toJson().encodePrettily());
                 }
             } else {
+                routingContext.response().setStatusCode(404);
                 routingContext.fail(ar.cause());
             }
         });
@@ -130,6 +132,7 @@ public class ApiVerticle extends AbstractVerticle {
             if (ar.succeeded()) {
                 routingContext.response().setStatusCode(201).end();
             } else {
+                routingContext.response().setStatusCode(404);
                 routingContext.fail(ar.cause());
             }
         });

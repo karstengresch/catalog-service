@@ -186,16 +186,14 @@ public class ApiVerticleTest {
         // To be implemented
         //
         //----
-      doAnswer(new Answer<Void>() {
-        public Void answer(InvocationOnMock invocation){
-          Handler<AsyncResult<Product>> handler = invocation.getArgument(1);
-          handler.handle(Future.succeededFuture(null));
-          return null;
-        }
-      }).when(catalogService).getProduct(eq("product1Id"),any());
+      doAnswer((Answer<Void>) invocation -> {
+        Handler<AsyncResult<Product>> handler = invocation.getArgument(1);
+        handler.handle(Future.succeededFuture(null));
+        return null;
+      }).when(catalogService).getProduct(eq("product1Id"), any());
 
       Async async = context.async();
-      vertx.createHttpClient().get(port, "localhost", "/product/111111", response -> {
+      vertx.createHttpClient().get(port, "localhost", "/product/oroductdoesnotexist", response -> {
         assertThat(response.statusCode(), equalTo(404));
         async.complete();
       })
@@ -205,13 +203,11 @@ public class ApiVerticleTest {
 
     @Test
     public void testAddProduct(TestContext context) throws Exception {
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation){
-                Handler<AsyncResult<String>> handler = invocation.getArgument(1);
-                handler.handle(Future.succeededFuture(null));
-                return null;
-             }
-         }).when(catalogService).addProduct(any(),any());
+        doAnswer((Answer<Void>) invocation -> {
+            Handler<AsyncResult<String>> handler = invocation.getArgument(1);
+            handler.handle(Future.succeededFuture(null));
+            return null;
+         }).when(catalogService).addProduct(any(), any());
 
         Async async = context.async();
         String itemId = "product1Id";
