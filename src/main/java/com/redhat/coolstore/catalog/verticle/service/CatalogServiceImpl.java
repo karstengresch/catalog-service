@@ -67,7 +67,7 @@ public class CatalogServiceImpl implements CatalogService {
        JsonObject query = new JsonObject().put(Product.ITEM_ID_KEY, itemId);
 
         mongoClient.find("products", query, asyncResult -> {
-
+        // TODO Java 8 streams
         if (asyncResult.succeeded()) {
           List<JsonObject> resultList = asyncResult.result();
           JsonObject resultJsonObject;

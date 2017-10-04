@@ -1,36 +1,30 @@
 package com.redhat.coolstore.catalog.verticle.service;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.redhat.coolstore.catalog.model.Product;
-
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+@RunWith(VertxUnitRunner.class)
 public class CatalogServiceTest extends MongoTestBase {
 
     private Vertx vertx;
 
-    //@Before
+    @Before
     public void setup(TestContext context) throws Exception {
         vertx = Vertx.vertx();
         vertx.exceptionHandler(context.exceptionHandler());
@@ -41,13 +35,13 @@ public class CatalogServiceTest extends MongoTestBase {
         async.await(10000);
     }
 
-    //@After
+    @After
     public void tearDown() throws Exception {
         mongoClient.close();
         vertx.close();
     }
 
-    //@Test
+    @Test
     public void testAddProduct(TestContext context) throws Exception {
         String itemId = "999999";
         String name = "productName";
@@ -78,7 +72,7 @@ public class CatalogServiceTest extends MongoTestBase {
         });
     }
 
-    //@Test
+    @Test
     public void testGetProducts(TestContext context) throws Exception {
         // ----
         // To be implemented
@@ -91,9 +85,37 @@ public class CatalogServiceTest extends MongoTestBase {
         //   and that the product values match what was inserted.
         // 
         // ----
+        Product product1 = new Product("product1Id", "product1", "product1 description", 12.55);
+        Product product2 = new Product("product2Id", "product2", "product2 description", 700.12);
+        Product product3 = new Product("product3Id", "product3", "product3 description", 20.01);
+        List<Product> products = new CopyOnWriteArrayList<>(Arrays.asList(product1, product2, product3));
+
+        CatalogService catalogService = new CatalogServiceImpl(vertx, getConfig(), mongoClient);
+
+        Async asyncContext = context.async();
+
+        // TODO streams ;)
+        for (Product product : products) {
+            catalogService.addProduct(product, ar -> {
+                if (ar.failed()) {
+                    context.fail(ar.cause().getMessage());
+                } else {
+                    JsonObject query = new JsonObject().put("_id", product.getItemId());
+                    mongoClient.findOne("products", query, null, ar1 -> {
+                        if (ar1.failed()) {
+                            context.fail(ar1.cause().getMessage());
+                        } else {
+                            assertThat(ar1.result().getString("name"), equalTo(product.getName()));
+
+                        }
+                    });
+                }
+            });
+        }
+        asyncContext.complete();
     }
 
-    //@Test
+//    @Test
     public void testGetProduct(TestContext context) throws Exception {
         // ----
         // To be implemented
@@ -101,7 +123,7 @@ public class CatalogServiceTest extends MongoTestBase {
         // ----
     }
 
-    //@Test
+//    @Test
     public void testGetNonExistingProduct(TestContext context) throws Exception {
         // ----
         // To be implemented
@@ -109,7 +131,7 @@ public class CatalogServiceTest extends MongoTestBase {
         // ----
     }
 
-    //@Test
+//    @Test
     public void testPing(TestContext context) throws Exception {
         CatalogService service = new CatalogServiceImpl(vertx, getConfig(), mongoClient);
         
