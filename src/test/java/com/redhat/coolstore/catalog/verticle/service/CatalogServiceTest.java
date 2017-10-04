@@ -64,7 +64,7 @@ public class CatalogServiceTest extends MongoTestBase {
 
         CatalogService service = new CatalogServiceImpl(vertx, getConfig(), mongoClient);
 
-        Async async = context.async();
+        Async asyncContext = context.async();
 
         service.addProduct(product, asyncResult -> {
             if (asyncResult.failed()) {
@@ -76,7 +76,7 @@ public class CatalogServiceTest extends MongoTestBase {
                         context.fail(ar1.cause().getMessage());
                     } else {
                         assertThat(ar1.result().getString("name"), equalTo(name));
-                        async.complete();
+                        asyncContext.complete();
                     }
                 });
             }
@@ -141,8 +141,8 @@ public class CatalogServiceTest extends MongoTestBase {
                     } else {
                         // TBD
                         asyncResult2.cause().printStackTrace();
+                        Assert.assertTrue(false);
                     }
-
                 });
             }
         });
@@ -156,6 +156,8 @@ public class CatalogServiceTest extends MongoTestBase {
         // To be implemented
         // 
         // ----
+        ;
+        System.out.println("*+*+*+* *+*+*+* *+*+*+* testGetProduct");
         List<Product> products = getProductList();
         CatalogService catalogService = new CatalogServiceImpl(vertx, getConfig(), mongoClient);
 
@@ -164,16 +166,17 @@ public class CatalogServiceTest extends MongoTestBase {
         String itemId = products.get(1).getItemId();
         String name = products.get(1).getName();
 
-        catalogService.getProduct(itemId, ar -> {
-            if (ar.failed()) {
-                context.fail(ar.cause().getMessage());
+        catalogService.getProduct(itemId, asyncResult1 -> {
+            if (asyncResult1.failed()) {
+                context.fail(asyncResult1.cause().getMessage());
             } else {
                 JsonObject query = new JsonObject().put("_id", itemId);
-                mongoClient.findOne("products", query, null, ar1 -> {
-                    if (ar1.failed()) {
-                        context.fail(ar1.cause().getMessage());
+                mongoClient.findOne("products", query, null, asyncResult2 -> {
+                    if (asyncResult2.failed()) {
+                        context.fail(asyncResult2.cause().getMessage());
                     } else {
-                        assertThat(ar1.result().getString("name"), equalTo(name));
+                        context.assertTrue(!asyncResult2.failed());
+                        context.assertEquals(asyncResult2.result().getString("name"), equalTo(name));
                     }
                 });
             }
@@ -188,6 +191,37 @@ public class CatalogServiceTest extends MongoTestBase {
         // To be implemented
         // 
         // ----
+      System.out.println("*+*+*+* *+*+*+* *+*+*+* testGetNonExistingProduct");
+      List<Product> products = getProductList();
+      CatalogService catalogService = new CatalogServiceImpl(vertx, getConfig(), mongoClient);
+
+      Async asyncContext = context.async();
+
+      String itemId = products.get(1).getItemId();
+      String name = products.get(1).getName();
+
+      catalogService.getProduct(itemId, asyncResult1 -> {
+        if (asyncResult1.failed()) {
+          context.fail(asyncResult1.cause().getMessage());
+        } else {
+          JsonObject query = new JsonObject().put("_id", "ID DO NOT EXIST");
+          mongoClient.find("products", query, asyncResult2 -> {
+
+            if (asyncResult2.succeeded()) {
+              List<JsonObject> resultList = asyncResult2.result();
+              // TODO Test, wonder if the cast could work or if forEach is needed
+              Assert.assertEquals(resultList.size(), 0);
+
+            } else {
+              // TBD
+              asyncResult2.cause().printStackTrace();
+              Assert.assertTrue(false);
+            }
+          });
+        }
+      });
+
+      asyncContext.complete();
     }
 
 //    @Test
