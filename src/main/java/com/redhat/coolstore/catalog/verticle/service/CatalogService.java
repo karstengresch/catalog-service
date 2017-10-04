@@ -1,9 +1,6 @@
 package com.redhat.coolstore.catalog.verticle.service;
 
-import java.util.List;
-
 import com.redhat.coolstore.catalog.model.Product;
-
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -11,6 +8,9 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
 
+import java.util.List;
+
+@ProxyGen
 public interface CatalogService {
 
     final static String ADDRESS = "catalog-service"; 
